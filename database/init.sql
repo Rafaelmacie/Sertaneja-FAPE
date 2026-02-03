@@ -1,7 +1,7 @@
 ---
 --- 1. CRIAÇÃO DOS TIPOS ENUMERADOS (POSTGRESQL)
 ---
-
+CREATE TYPE cargo_diretor AS ENUM ('ADMINISTRATIVO', 'FINANCEIRO', 'EXECUTIVO');
 CREATE TYPE estado_civil AS ENUM ('Solteiro', 'Casado', 'Divorciado', 'Viúvo', 'SeparadoJudicialmente');
 CREATE TYPE nivel_renda AS ENUM ('até 1 salários mínimos', '1 a 2 salários mínimos', 'Mais de 2 salários mínimos');
 CREATE TYPE nivel_alfabetizacao AS ENUM ('sabe ler e escrever', 'sabe ler e não escreve', 'não lê e não escreve');
@@ -35,9 +35,17 @@ CREATE TABLE usuario (
     telefone varchar(14)
 );
 
+CREATE TABLE diretor (
+    id_diretor SERIAL PRIMARY KEY,
+    id_usuario int NOT NULL UNIQUE REFERENCES usuario(id_usuario) ON DELETE CASCADE,
+    cpf varchar(11) UNIQUE NOT NULL,
+    cargo cargo_diretor NOT NULL
+);
+
 -- Tabela Administrativo/Diretores
 CREATE TABLE administrativo (
     id_diretor SERIAL PRIMARY KEY,
+    id_usuario int NOT NULL REFERENCES usuario(id_usuario) ON DELETE CASCADE,
     cpf varchar(14) UNIQUE NOT NULL,
     cargo varchar(100)
 );
@@ -45,6 +53,7 @@ CREATE TABLE administrativo (
 -- Tabela Cooperado (Entidade Principal)
 CREATE TABLE cooperado (
     id_cooperado SERIAL PRIMARY KEY,
+    id_usuario int NOT NULL UNIQUE REFERENCES usuario(id_usuario) ON DELETE CASCADE,
     num_matricula int UNIQUE NOT NULL,
     cpf varchar(11) UNIQUE NOT NULL,
     rg varchar(20) UNIQUE,
@@ -66,7 +75,7 @@ CREATE TABLE cooperado (
     arqv_cadastro varchar(255),
     arqv_integralizacao varchar(255),
     termo_demissao varchar(255),
-    data_emissao date,
+    data_emissao date DEFAULT CURRENT_DATE,
     metodo_aceite tipo_metodo
 );
 
@@ -84,14 +93,14 @@ CREATE TABLE endereco_cooperado (
 
 -- Tabelas de Especialização de Endereço
 CREATE TABLE endereco_urbano (
-    id_endereco int PRIMARY KEY REFERENCES endereco_cooperado(id_endereco_cooperado),
+    id_endereco int PRIMARY KEY REFERENCES endereco_cooperado(id_endereco_cooperado) ON DELETE CASCADE,
     logradouro varchar(150),
     numero int,
     complemento varchar(50)
 );
 
 CREATE TABLE endereco_rural (
-    id_endereco int PRIMARY KEY REFERENCES endereco_cooperado(id_endereco_cooperado),
+    id_endereco int PRIMARY KEY REFERENCES endereco_cooperado(id_endereco_cooperado) ON DELETE CASCADE,
     tipo_local tipo_local_rural,
     nome_local varchar(150)
 );
@@ -130,7 +139,9 @@ CREATE TABLE producao (
     hectares numeric(12,2),
     data_registro date DEFAULT CURRENT_DATE,
     nome_propriedade varchar(150),
-    unidade_medida unidade_medida
+    unidade_medida unidade_medida,
+    cidade varchar(100),
+    uf char(2)
 );
 
 -- Tabela de Demanda (Necessidades da Cooperativa)
