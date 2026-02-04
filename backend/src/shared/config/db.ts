@@ -1,4 +1,4 @@
-import { Pool, PoolClient, QueryResult } from 'pg';
+import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -11,24 +11,16 @@ class Database {
         this.pool = new Pool({
             host: process.env.POSTGRES_HOST,
             port: parseInt(process.env.POSTGRES_PORT || '5432'),
-
             user: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.POSTGRES_DB,
-
             max: 20,
             idleTimeoutMillis: 30000,
-            connectionTimeoutMillis: 2000,
-        });
-
-        // Teste rápido de conexão ao iniciar
-        this.pool.on('connect', () => {
-            console.log('✅ Conexão com o banco de dados estabelecida!');
+            connectionTimeoutMillis: 10000,
         });
 
         this.pool.on('error', (err) => {
-            console.error('❌ Erro inesperado no cliente do banco', err);
-            process.exit(-1);
+            console.error('❌ Erro no Pool:', err);
         });
     }
 
@@ -39,19 +31,25 @@ class Database {
         return Database.instance;
     }
 
-    /**
-     * Executa queries simples.
-     */
-    public async query(text: string, params?: any[]): Promise<QueryResult> {
-        return await this.pool.query(text, params);
+    // Wrapper simples para queries
+    public async query<T extends QueryResultRow = any>(text: string, params?: any[]): Promise<QueryResult<T>> {
+        return await this.pool.query<T>(text, params);
     }
 
-    /**
-     * Obtém um cliente para Transações (BEGIN/COMMIT).
-     */
-    public async getClient(): Promise<PoolClient> {
+    // O método de Transação que estava faltando
+    public async transaction<T>(callback: (client: PoolClient) => Promise<T>): Promise<T> {
         const client = await this.pool.connect();
-        return client;
+        try {
+            await client.query('BEGIN');
+            const result = await callback(client);
+            await client.query('COMMIT');
+            return result;
+        } catch (e) {
+            await client.query('ROLLBACK');
+            throw e;
+        } finally {
+            client.release();
+        }
     }
 }
 
