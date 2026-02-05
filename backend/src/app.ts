@@ -1,15 +1,19 @@
 import express from 'express';
 import cors from 'cors';
+import { administrativoRoutes } from './modules/usuarios/diretores/administrativo/administrativoRoutes';
 
-import type { Application, Request, Response } from 'express';
-
-const app: Application = express();
+const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'API rodando com sucesso!' });
+// Rota de teste
+app.get('/', (req, res) => {
+  res.json({ status: 'API Online 🚀' });
 });
+
+// AQUI É O SEGREDO DO CAMINHO:
+// Isso cria a URL: http://localhost:3000/api/usuarios/diretores/administrativo/...
+app.use('/api/usuarios/diretores/administrativo', administrativoRoutes);
 
 export { app };
