@@ -2,6 +2,8 @@ import db from "./../../../../shared/config/db";
 import bcrypt from "bcryptjs";
 import { AdministrativoRepository } from "./administrativoRepository";
 import { ICreateAdministrativoDTO } from "./administrativoModel";
+import jwt from "jsonwebtoken";
+import { ILoginResponse } from "./administrativoModel";
 
 export class AdministrativoService {
     private repository: AdministrativoRepository;
@@ -60,4 +62,35 @@ export class AdministrativoService {
 
         return users;
     }
+    async authenticate(email: string, senhaPlana: string): Promise<ILoginResponse> {
+    // 1. Busca o usuário
+        const user = await this.repository.findUserForLogin(email);
+        if (!user) {
+            throw new Error("Credenciais inválidas.");
+        }
+
+        // 2. Verifica a senha
+        const isPasswordValid = await bcrypt.compare(senhaPlana, user.senha);
+        if (!isPasswordValid) {
+            throw new Error("Credenciais inválidas.");
+        }
+
+        // 3. Gera o Token (Validade de 1 dia)
+        const secret = process.env.JWT_SECRET || "fape-secret-key-2026";
+        const token = jwt.sign(
+            { id: user.id_usuario, email: user.email, role: 'ADMIN' },
+            secret,
+            { expiresIn: "1d" }
+        );
+
+        return {
+            auth: true,
+            token,
+            user: {
+                id_usuario: user.id_usuario,
+                nome: user.nome,
+                email: user.email
+            }
+    };
+}
 }

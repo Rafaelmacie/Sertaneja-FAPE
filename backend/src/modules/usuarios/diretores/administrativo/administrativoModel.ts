@@ -15,3 +15,13 @@ export interface IAdministrativoUser {
     cpf: string;
     cargo: string;
 }
+
+export interface ILoginResponse {
+    auth: boolean;
+    token: string;
+    user: {
+        id_usuario: number;
+        nome: string;
+        email: string;
+    };
+}

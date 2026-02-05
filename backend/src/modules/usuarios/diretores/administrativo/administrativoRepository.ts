@@ -63,4 +63,16 @@ export class AdministrativoRepository {
         const result = await db.query(sql);
         return result.rows;
     }
+
+    // Adicionar ao AdministrativoRepository
+    async findUserForLogin(email: string): Promise<any | undefined> {
+        const sql = `
+            SELECT u.id_usuario, u.nome, u.email, u.senha 
+            FROM usuario u
+            INNER JOIN diretor d ON u.id_usuario = d.id_usuario
+            WHERE u.email = $1 AND d.cargo = 'ADMINISTRATIVO'
+        `;
+        const result = await db.query(sql, [email]);
+        return result.rows[0];
+    }
 }

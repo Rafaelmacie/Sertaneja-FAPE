@@ -36,4 +36,21 @@ export class AdministrativoController {
             return res.status(500).json({ error: "Erro interno ao buscar diretores." });
         }
     }
+
+    // Adicionar ao AdministrativoController
+    async login(req: Request, res: Response) {
+        const service = new AdministrativoService();
+        const { email, senha } = req.body;
+
+        if (!email || !senha) {
+            return res.status(400).json({ error: "E-mail e senha são obrigatórios." });
+        }
+
+        try {
+            const result = await service.authenticate(email, senha);
+            return res.status(200).json(result);
+        } catch (error: any) {
+            return res.status(401).json({ error: error.message });
+        }
+    }
 }
