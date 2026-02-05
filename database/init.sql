@@ -42,14 +42,6 @@ CREATE TABLE diretor (
     cargo cargo_diretor NOT NULL
 );
 
--- Tabela Administrativo/Diretores
-CREATE TABLE administrativo (
-    id_diretor SERIAL PRIMARY KEY,
-    id_usuario int NOT NULL REFERENCES usuario(id_usuario) ON DELETE CASCADE,
-    cpf varchar(14) UNIQUE NOT NULL,
-    cargo varchar(100)
-);
-
 -- Tabela Cooperado (Entidade Principal)
 CREATE TABLE cooperado (
     id_cooperado SERIAL PRIMARY KEY,
