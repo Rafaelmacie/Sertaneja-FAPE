@@ -1,12 +1,23 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Login } from './pages/Login'; // Importando a tela que criamos
+import { Login } from './pages/Login';
+import { DefaultLayout } from './layouts/DefaultLayout';
+
+// IMPORTAÇÃO ATUALIZADA: Apontando para a pasta do seu líder
+import { CooperadoIndexPage } from './pages/cooperados/cooperadoIndexPage';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* A rota "/" define o que aparece assim que o site abre */}
+        {/* Rota Pública */}
         <Route path="/" element={<Login />} />
+
+        {/* Rotas Privadas (Com a Sidebar) */}
+        <Route element={<DefaultLayout />}>
+          {/* Quando acessar /cooperados, carrega o componente da pasta nova */}
+          <Route path="/cooperados" element={<CooperadoIndexPage />} />
+        </Route>
+
       </Routes>
     </BrowserRouter>
   );
