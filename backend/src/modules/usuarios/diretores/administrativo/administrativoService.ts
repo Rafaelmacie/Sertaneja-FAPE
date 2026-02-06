@@ -1,50 +1,52 @@
 import db from "./../../../../shared/config/db"; 
 import bcrypt from "bcryptjs";
-import { AdministrativoRepository } from "./administrativoRepository";
-import { ICreateAdministrativoDTO } from "./administrativoModel";
 import jwt from "jsonwebtoken";
-import { ILoginResponse } from "./administrativoModel";
+import { UsuarioRepository } from "./../../usuarioRepository";
+import { DiretorRepository } from "./../diretorRepository";
+import { AdministrativoRepository } from "./administrativoRepository";
+import { ICreateAdministrativoDTO, ILoginResponse } from "./administrativoModel";
 
 export class AdministrativoService {
-    private repository: AdministrativoRepository;
+    private usuarioRepo: UsuarioRepository;
+    private diretorRepo: DiretorRepository;
+    private adminRepo: AdministrativoRepository;
 
     constructor() {
-        this.repository = new AdministrativoRepository();
+        this.usuarioRepo = new UsuarioRepository();
+        this.diretorRepo = new DiretorRepository();
+        this.adminRepo = new AdministrativoRepository();
     }
 
     async execute(data: Omit<ICreateAdministrativoDTO, 'senhaHash'> & { senha: string }) {
-        // 1. LIMPEZA DE DADOS (A CORREÇÃO ESTÁ AQUI)
-        // Remove pontos e traços, deixando apenas os números.
-        // Ex: "123.456.789-00" vira "12345678900" (11 caracteres)
+        // 1. LIMPEZA DE DADOS
         const cpfLimpo = data.cpf.replace(/\D/g, '');
-
-        // Validação extra: CPF deve ter 11 dígitos
         if (cpfLimpo.length !== 11) {
             throw new Error("CPF inválido. Deve conter 11 dígitos.");
-        }
 
-        // 2. Validações de Leitura
-        const emailExists = await this.repository.findByEmail(data.email);
+        }    
+        // 2. Validações (Usando os repositórios genéricos)
+        const emailExists = await this.usuarioRepo.findByEmail(data.email);
         if (emailExists) throw new Error("Email já cadastrado.");
 
-        // Usamos o cpfLimpo aqui na busca também
-        const cpfExists = await this.repository.findByCpf(cpfLimpo);
+        const cpfExists = await this.diretorRepo.findByCpf(cpfLimpo);
         if (cpfExists) throw new Error("CPF já cadastrado.");
 
-        // 3. Hash da senha
+       // 3. Hash da senha
         const salt = await bcrypt.genSalt(10);
         const senhaHash = await bcrypt.hash(data.senha, salt);
 
-        // 4. Transação
+        // 4. Transação (O MAESTRO EM AÇÃO)
         return await db.transaction(async (client) => {
-            const userId = await this.repository.saveUsuario({ 
-                ...data, 
-                cpf: cpfLimpo, // Salvamos o CPF limpo no objeto do usuário se necessário
+            // A. Cria Usuário (Genérico)
+            const userId = await this.usuarioRepo.create({ 
+                nome: data.nome,
+                email: data.email,
+                telefone: data.telefone,
                 senhaHash 
             }, client);
 
-            // Passamos o cpfLimpo para a tabela diretor
-            await this.repository.saveDiretor(userId, cpfLimpo, client);
+            // B. Cria Diretor Administrativo (Genérico + Cargo Fixo)
+            await this.diretorRepo.create(userId, cpfLimpo, 'ADMINISTRATIVO', client);
 
             return { 
                 id_usuario: userId, 
@@ -52,19 +54,20 @@ export class AdministrativoService {
             };
         });
     }
-
     async listAll() {
-        const users = await this.repository.findAll();
+        // Usa o repositório específico de Adm para filtrar por cargo
+        const users = await this.adminRepo.findAll();
         
         if (!users || users.length === 0) {
-            return []; // Retorna array vazio se não achar ninguém
+            return [];
         }
 
         return users;
     }
+
     async authenticate(email: string, senhaPlana: string): Promise<ILoginResponse> {
-    // 1. Busca o usuário
-        const user = await this.repository.findUserForLogin(email);
+        // 1. Busca o usuário (Usando o repo específico que traz a senha)
+        const user = await this.adminRepo.findUserForLogin(email);
         if (!user) {
             throw new Error("Credenciais inválidas.");
         }
@@ -91,6 +94,6 @@ export class AdministrativoService {
                 nome: user.nome,
                 email: user.email
             }
-    };
-}
+        };
+    }
 }
