@@ -1,6 +1,6 @@
 import db from "../../../shared/config/db";
 import { PoolClient } from "pg";
-import { CargoDiretor } from "./diretorModel";
+import { CargoDiretor } from "../../../shared/constants/cargoDiretor";
 
 export class DiretorRepository {
 

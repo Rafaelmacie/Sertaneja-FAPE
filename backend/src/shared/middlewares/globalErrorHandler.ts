@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../errors/appError";
 
+// Formatação de erro global
 export function globalErrorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
 
     if (err instanceof AppError) {

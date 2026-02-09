@@ -1,5 +1,4 @@
-// Aqui centralizamos os cargos. Se criar um novo, adiciona aqui.
-export type CargoDiretor = 'ADMINISTRATIVO' | 'FINANCEIRO' | 'EXECUTIVO';
+import { CargoDiretor } from "../../../shared/constants/cargoDiretor";
 
 export interface IDiretor {
     id_diretor: number;
