@@ -1,15 +1,21 @@
 import express from 'express';
 import cors from 'cors';
+import { administrativoRoutes } from './modules/usuarios/diretores/administrativo/administrativoRoutes';
+import { globalErrorHandler } from './shared/middlewares/globalErrorHandler'
 
-import type { Application, Request, Response } from 'express';
-
-const app: Application = express();
+const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'API rodando com sucesso!' });
+// Rota de teste
+app.get('/', (req, res) => {
+  res.json({ status: 'API Online 🚀' });
 });
+
+// Diretor Administrativo
+app.use('/usuarios/diretores/administrativo', administrativoRoutes);
+
+app.use(globalErrorHandler);
 
 export { app };
