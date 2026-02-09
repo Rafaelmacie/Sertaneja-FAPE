@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { administrativoRoutes } from './modules/usuarios/diretores/administrativo/administrativoRoutes';
+import { globalErrorHandler } from './shared/middlewares/globalErrorHandler'
 
 const app = express();
 
@@ -12,8 +13,9 @@ app.get('/', (req, res) => {
   res.json({ status: 'API Online 🚀' });
 });
 
-// AQUI É O SEGREDO DO CAMINHO:
-// Isso cria a URL: http://localhost:3000/api/usuarios/diretores/administrativo/...
-app.use('/api/usuarios/diretores/administrativo', administrativoRoutes);
+// Diretor Administrativo
+app.use('/usuarios/diretores/administrativo', administrativoRoutes);
+
+app.use(globalErrorHandler);
 
 export { app };
