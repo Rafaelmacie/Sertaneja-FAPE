@@ -16,7 +16,7 @@ export function CooperadoIndexPage() {
     <div className="w-full max-w-6xl mx-auto space-y-6">
       
       {/* --- CABEÇALHO DA PÁGINA --- */}
-      <h1 className="text-2xl font-bold text-slate-800">Lista de Cooperados</h1>
+      <h1 className="text-2xl font-bold text-slate-800">LISTA DE COOPERADOS</h1>
 
       {/* --- BARRA DE AÇÃO (Busca + Botão) --- */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
