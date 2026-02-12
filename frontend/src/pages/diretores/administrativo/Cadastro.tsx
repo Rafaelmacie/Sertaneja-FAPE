@@ -1,6 +1,6 @@
 import { User, Lock, Mail, FileText } from 'lucide-react';
-import { Input } from '../components/Input';
-import { Button } from '../components/Button';
+import { Input } from '../../../components/Input';
+import { Button } from '../../../components/Button';
 import logoImg from '../assets/logo-fape.png'; 
 
 export function Cadastro() {

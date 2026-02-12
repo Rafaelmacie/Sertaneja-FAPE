@@ -4,11 +4,11 @@ import { DefaultLayout } from './layouts/DefaultLayout';
 
 // IMPORTAÇÃO ATUALIZADA: Apontando para a pasta do seu líder
 import { CooperadoIndexPage } from './pages/cooperados/cooperadoIndexPage';
-import { Dashboard } from './pages/Dashboard';
-import { Clientes } from './pages/Clientes';
-import { Produtos } from './pages/Produtos';
-import { Demandas } from './pages/Demandas';
-import { AjudaSuporte } from './pages/AjudaSuporte';
+import { Dashboard } from './pages/diretores/administrativo/Dashboard';
+import { Clientes } from './pages/diretores/administrativo/Clientes';
+import { Produtos } from './pages/diretores/administrativo/Produtos';
+import { Demandas } from './pages/diretores/administrativo/Demandas';
+import { AjudaSuporte } from './pages/diretores/administrativo/AjudaSuporte';
 
 function App() {
   return (
