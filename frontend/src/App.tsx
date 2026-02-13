@@ -2,8 +2,11 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Login } from './pages/Login';
 import { DefaultLayout } from './layouts/DefaultLayout';
 
-// IMPORTAÇÃO ATUALIZADA: Apontando para a pasta do seu líder
+// imports de cooperad
 import { CooperadoIndexPage } from './pages/cooperados/cooperadoIndexPage';
+import { CadastroCooperadoIndexPage } from './pages/cooperados/cadastroCooperadoIndexPage';
+
+// imports das paginas 
 import { Dashboard } from './pages/diretores/administrativo/Dashboard';
 import { Clientes } from './pages/diretores/administrativo/Clientes';
 import { Produtos } from './pages/diretores/administrativo/Produtos';
@@ -26,6 +29,9 @@ function App() {
           <Route path="/produtos" element={<Produtos/>} />
           <Route path="/demandas" element={<Demandas/>} />
           <Route path="/ajuda" element={<AjudaSuporte/>} />
+
+          {/* rotas de cadastro de cooperados */}
+          <Route path="/cooperados/novo" element={<CadastroCooperadoIndexPage />} />
         </Route>
 
       </Routes>
