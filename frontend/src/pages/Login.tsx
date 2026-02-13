@@ -1,25 +1,55 @@
+import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { User, Lock } from 'lucide-react';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { motion } from 'framer-motion';
+import { administrativoApi } from '../services/api';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import Logo from '../assets/logo-verde-sem-fundo.svg';
 import fundoImg from '../assets/logo-fundo-fape.jpg';
 
 export function Login() {
+  const [email, setEmail] = useState<string>('');
+  const [senha, setSenha] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const data = await administrativoApi.login({ email, senha });
+      
+      localStorage.setItem('@Fape:token', data.token);
+      localStorage.setItem('@Fape:user', JSON.stringify(data.user));
+
+      navigate('/dashboard');
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message || 'Erro ao realizar login.';
+        alert(message);
+      } else {
+        alert('Ocorreu um erro inesperado.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <div className="min-h-screen w-full flex bg-white">
 
       {/* --- LADO ESQUERDO --- */}
       <div className="hidden lg:flex w-1/2 relative overflow-hidden">
-
         <img
           src={fundoImg}
-          alt="Imagem de agricultores com uma boa colheita"
+          alt="Imagem de agricultores"
           className="absolute inset-0 w-full h-full object-cover"
         />
 
-        {/* TEXTO SOBRE A IMAGEM (sem overlay verde agora) */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -38,14 +68,13 @@ export function Login() {
       {/* --- LADO DIREITO --- */}
       <div className="w-full lg:w-1/2 relative flex items-center justify-center px-8 py-12 overflow-hidden">
 
-        {/* NOVO FUNDO DECORATIVO */}
+        {/* FUNDO DECORATIVO */}
         <div className="absolute inset-0 bg-gradient-to-br from-white via-green-400 to-green-250" />
 
-        {/* Forma decorativa institucional */}
+        {/* Formas decorativas que haviam sumido */}
         <div className="absolute -top-20 -right-20 w-96 h-96 bg-green-600 rounded-full blur-3xl opacity-40" />
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-green-700 rounded-full blur-2xl opacity-30" />
 
-        {/* FORMULÁRIO (inalterado) */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
@@ -53,29 +82,40 @@ export function Login() {
           className="relative z-10 w-full max-w-md bg-white/75 backdrop-blur-xl shadow-2xl rounded-3xl p-10 border border-green-100"
         >
           
+          {/* ANIMAÇÃO DA LOGO (Flutuar) */}
           <motion.div
             animate={{ y: [0, -12, 0] }}
             transition={{ repeat: Infinity, duration: 3 }}
             className="flex flex-col items-center gap-3 mb-8"
           >
-
             <img
               src={Logo}
               alt="Logo FAPE"
               className="w-40 drop-shadow-md"
             />
-            
-            
             <h1 className="text-green-700 font-bold text-lg tracking-wide">
               SERTANEJA - LOGIN
             </h1>
           </motion.div>
 
-
-          <form className="w-full flex flex-col gap-5">
-
-            <Input type="text" placeholder="CPF" icon={User} />
-            <Input type="password" placeholder="Senha" icon={Lock} />
+          <form className="w-full flex flex-col gap-5" onSubmit={handleSubmit}>
+            <Input 
+              type="email" 
+              placeholder="E-mail" 
+              icon={User} 
+              value={email}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+              required
+            />
+            
+            <Input 
+              type="password" 
+              placeholder="Senha" 
+              icon={Lock} 
+              value={senha}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setSenha(e.target.value)}
+              required
+            />
 
             <div className="flex justify-between items-center text-sm w-full">
               <label className="flex items-center gap-2 cursor-pointer text-green-700">
@@ -101,12 +141,12 @@ export function Login() {
             >
               <Button
                 type="submit"
+                disabled={isLoading}
                 className="w-full py-3 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold shadow-lg transition-all duration-300"
               >
-                Entrar
+                {isLoading ? 'Carregando...' : 'Entrar'}
               </Button>
             </motion.div>
-
           </form>
 
           <p className="text-gray-600 text-sm mt-6 text-center">
