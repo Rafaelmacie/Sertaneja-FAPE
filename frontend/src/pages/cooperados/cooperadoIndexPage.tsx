@@ -40,28 +40,30 @@ export function CooperadoIndexPage() {
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6 relative">
       
-      {/* CABEÇALHO E AÇÕES */}
-      <header className="flex flex-col md:flex-row justify-between items-center gap-4">
-        <h1 className="text-2xl font-bold text-slate-800">LISTA DE COOPERADOS</h1>
-        
-        <div className="flex w-full md:w-auto gap-4">
-          <div className="relative w-full md:w-96">
-            <input 
-              type="text" 
-              placeholder="Buscar por nome" 
-              className="w-full pl-4 pr-10 py-2.5 rounded-full border border-gray-300 focus:outline-none focus:border-[#00A859] focus:ring-1 focus:ring-[#00A859] bg-white shadow-sm transition-all"
-            />
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-          </div>
+      {/* --- CABEÇALHO DA PÁGINA --- */}
+      <h1 className="text-2xl font-bold text-slate-800">LISTA DE COOPERADOS</h1>
 
-          <button 
-            onClick={() => setIsModalInitialOpen(true)}
-            className="bg-[#00A859] hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-full flex items-center gap-2 shadow-md transition-colors shrink-0"
-          >
-            Cadastrar Cooperado <Plus size={20} />
-          </button>
+      {/* --- BARRA DE AÇÃO (Busca + Botão) --- */}
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        
+        {/* Input de Busca Estilizado */}
+        <div className="relative w-full md:w-96">
+          <input 
+            type="text" 
+            placeholder="Buscar por nome" 
+            className="w-full pl-4 pr-10 py-2.5 rounded-full border border-gray-300 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 bg-white shadow-sm transition-all"
+          />
+          <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
         </div>
-      </header>
+
+        {/* Botão de Adicionar (Verde) */}
+        <button 
+          onClick={() => setIsModalInitialOpen(true)}
+          className="bg-[#00A859] hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-full flex items-center gap-2 shadow-md transition-colors"
+        >
+          Cadastrar Cooperado <Plus size={20} />
+        </button>
+      </div>
 
       {/* TABELA DE DADOS */}
       <main className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
