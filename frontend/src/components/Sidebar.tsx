@@ -81,7 +81,7 @@ export function Sidebar() {
                 ${isActive 
                   ? isCollapsed 
                     ? 'bg-[#00A859] text-white shadow-md' // --- ESTILO FECHADO: Fundo Verde + Texto Branco
-                    : 'bg-white shadow-lg shadow-gray-200/50 text-[#00A859] font-bold translate-x-2 z-10' // --- ESTILO ABERTO: Fundo Branco + Texto Verde + Saltado
+                    : 'bg-white shadow-lg shadow-gray-300/50 text-[#00A859] font-bold translate-x-2 z-10' // --- ESTILO ABERTO: Fundo Branco + Texto Verde + Saltado
                   : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' // INATIVO
                 }
               `}
@@ -99,7 +99,7 @@ export function Sidebar() {
                   shrink-0 z-10 relative transition-colors
                   ${isActive 
                     ? isCollapsed ? 'text-white' : 'text-[#00A859]' // Ícone Branco se fechado, Verde se aberto
-                    : 'text-gray-400 group-hover:text-gray-600'
+                    : 'text-gray-400 group-hover:text-gray-900'
                   }
                 `} 
               />
