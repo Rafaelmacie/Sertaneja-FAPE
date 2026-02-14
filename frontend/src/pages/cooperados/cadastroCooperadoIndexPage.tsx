@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Upload, X, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Upload, X, Eye, EyeOff } from 'lucide-react';
 
-// Nossas importações dos arquivos componentizados!
+// --- COMPONENTES DAS ABAS (Desacoplados) ---
 import { AbaDadosPessoais } from '../cooperados/Abas/AbaDadosPessoais';
 import { AbaSocioeconomica } from '../cooperados/Abas/AbaSocioeconomica';
 import { AbaEndereco } from '../cooperados/Abas/AbaEndereco';
@@ -11,34 +11,51 @@ import { AbaBancarios } from './Abas/Ababancarios';
 import { AbaDCE } from '../cooperados/Abas/AbaDCE';
 import { AbaConfirmacao } from '../cooperados/Abas/AbaConfirmacao';
 
+/**
+ * Configuração estática das abas do formulário.
+ * Mantida fora do componente para evitar recriação de memória a cada re-renderização (Performance).
+ */
+const TABS_CONFIG = [
+  { id: 'pessoais', label: 'Dados Pessoais' },
+  { id: 'socioeconomica', label: 'Quali. Socioeconômica' },
+  { id: 'endereco', label: 'Dados de Endereço' },
+  { id: 'producao', label: 'Dados de Produção' },
+  { id: 'bancarios', label: 'Dados Bancários' },
+  { id: 'dce', label: 'DCE' },
+  { id: 'confirmacao', label: 'Confirmação' },
+];
+
+/**
+ * Componente Pai (Controller) do Cadastro de Cooperados.
+ * Responsável por gerenciar o estado global do formulário multi-etapas,
+ * a transição entre abas filhas e os modais sobrepostos (Upload e Senha).
+ */
 export function CadastroCooperadoIndexPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('pessoais');
 
-  // Controle de Upload (Fica no pai porque várias abas podem chamar)
+  // --- ESTADOS GLOBAIS DE MODAIS ---
+  // Upload Genérico (Reaproveitado por múltiplas abas)
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [uploadDocName, setUploadDocName] = useState('');
 
-  // Controle do Modal de Senha Final
+  // Modal de Senha Final
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const tabs = [
-    { id: 'pessoais', label: 'Dados Pessoais' },
-    { id: 'socioeconomica', label: 'Quali. Socioeconômica' },
-    { id: 'endereco', label: 'Dados de Endereço' },
-    { id: 'producao', label: 'Dados de Produção' },
-    { id: 'bancarios', label: 'Dados Bancários' },
-    { id: 'dce', label: 'DCE' },
-    { id: 'confirmacao', label: 'Confirmação' },
-  ];
-
+  /**
+   * Abre o modal de upload genérico e define qual documento está sendo solicitado.
+   * @param docName Nome de exibição do documento (ex: 'RG', 'Comprovante de Residência')
+   */
   const handleOpenUpload = (docName: string) => {
     setUploadDocName(docName);
     setIsUploadModalOpen(true);
   };
 
+  /**
+   * Finaliza o fluxo de cadastro, fecha modais e redireciona o usuário para a listagem.
+   */
   const handleFinalizarCadastro = () => {
     setIsPasswordModalOpen(false);
     navigate('/cooperados');
@@ -48,9 +65,9 @@ export function CadastroCooperadoIndexPage() {
     <div className="w-full max-w-6xl mx-auto relative">
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         
-        {/* CABEÇALHO DAS ABAS */}
-        <div className="flex overflow-x-auto border-b border-gray-200 hide-scrollbar">
-          {tabs.map((tab) => (
+        {/* NAVEGAÇÃO DAS ABAS */}
+        <nav className="flex overflow-x-auto border-b border-gray-200 hide-scrollbar">
+          {TABS_CONFIG.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -62,10 +79,10 @@ export function CadastroCooperadoIndexPage() {
               {activeTab === tab.id && <div className="absolute bottom-0 left-0 w-full h-1 bg-[#00A859] rounded-t-md"></div>}
             </button>
           ))}
-        </div>
+        </nav>
 
-        {/* ÁREA ONDE AS ABAS SÃO RENDERIZADAS */}
-        <div className="p-8">
+        {/* ÁREA DE RENDERIZAÇÃO DAS ABAS (Componentes Desacoplados) */}
+        <main className="p-8">
           {activeTab === 'pessoais' && <AbaDadosPessoais onNext={() => setActiveTab('socioeconomica')} onCancel={() => navigate('/cooperados')} onOpenUpload={handleOpenUpload} />}
           {activeTab === 'socioeconomica' && <AbaSocioeconomica onNext={() => setActiveTab('endereco')} onPrev={() => setActiveTab('pessoais')} />}
           {activeTab === 'endereco' && <AbaEndereco onNext={() => setActiveTab('producao')} onPrev={() => setActiveTab('socioeconomica')} onOpenUpload={handleOpenUpload} />}
@@ -73,8 +90,10 @@ export function CadastroCooperadoIndexPage() {
           {activeTab === 'bancarios' && <AbaBancarios onNext={() => setActiveTab('dce')} onPrev={() => setActiveTab('producao')} />}
           {activeTab === 'dce' && <AbaDCE onNext={() => setActiveTab('confirmacao')} onPrev={() => setActiveTab('bancarios')} />}
           {activeTab === 'confirmacao' && <AbaConfirmacao onPrev={() => setActiveTab('dce')} onFinish={() => setIsPasswordModalOpen(true)} />}
-        </div>
+        </main>
       </div>
+
+      {/* --- MODAIS GLOBAIS DA TELA --- */}
 
       {/* MODAL DE UPLOAD GERAL */}
       {isUploadModalOpen && (
@@ -103,6 +122,7 @@ export function CadastroCooperadoIndexPage() {
               <X size={18} strokeWidth={3} />
             </button>
             <h2 className="text-2xl font-black text-gray-800 text-center uppercase tracking-wide">Defina uma senha para o usuário</h2>
+            
             <div className="flex flex-col gap-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Senha:</label>
@@ -123,6 +143,7 @@ export function CadastroCooperadoIndexPage() {
                 </div>
               </div>
             </div>
+            
             <button onClick={handleFinalizarCadastro} className="mt-2 w-full bg-[#00A859] hover:bg-emerald-700 text-white font-black py-4 px-4 rounded-xl shadow-lg transition-transform hover:scale-105 uppercase tracking-wide text-lg">
               Finalizar Cadastro
             </button>
