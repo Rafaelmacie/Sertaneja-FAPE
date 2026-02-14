@@ -3,8 +3,8 @@ import { Login } from './pages/Login';
 import { DefaultLayout } from './layouts/DefaultLayout';
 
 // imports de cooperad
-import { CooperadoIndexPage } from './pages/cooperados/cooperadoIndexPage';
-import { CadastroCooperadoIndexPage } from './pages/cooperados/cadastroCooperadoIndexPage';
+import { CooperadoIndexPage } from './pages/diretores/administrativo/controleCooperados/tabelaCooperados';
+import { CadastroCooperadoIndexPage } from './pages/diretores/administrativo/controleCooperados/cadastroCooperado';
 
 // imports das paginas 
 import { Dashboard } from './pages/diretores/administrativo/Dashboard';
