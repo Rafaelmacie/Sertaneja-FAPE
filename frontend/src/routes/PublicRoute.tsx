@@ -6,5 +6,5 @@ export function PublicRoute() {
 
   // Se TEM token -> Joga pro Dashboard (replace evita que ele volte pela seta do navegador)
   // Se NÃO TEM token -> Renderiza a tela de Login (<Outlet />)
-  return token ? <Navigate to="/dashboard" replace /> : <Outlet />;
+  return token ? <Navigate to="/cooperados" replace /> : <Outlet />;
 }

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Search, Plus, MoreHorizontal, X, Upload, FileText, UserCircle, Download } from 'lucide-react'; 
 import { useNavigate } from 'react-router-dom';
 
-// Adicionado idade e CPF mocado para o PopUp
 const cooperadosMocados = [
   { id: 1, nome: 'Rafael Maciel Nogueira', produtos: 'Manga, bolo, polpa, torta', idade: 25, cpf: '123.456.789-00' },
   { id: 2, nome: 'Davi Nascimento Pereira', produtos: 'Abacaxi, suco de abacaxi', idade: 20, cpf: '400.289.224-00' },
@@ -17,7 +16,7 @@ export function CooperadoIndexPage() {
   const [isUploadPdfModalOpen, setIsUploadPdfModalOpen] = useState(false);
   const [pdfFileName, setPdfFileName] = useState<string | null>(null);
 
-  // NOVO ESTADO: Controle do Modal de Detalhes
+  // Controle do Modal de Detalhes
   const [cooperadoSelecionado, setCooperadoSelecionado] = useState<typeof cooperadosMocados[0] | null>(null);
 
   const handleOpenPdfUpload = () => {
@@ -31,7 +30,6 @@ export function CooperadoIndexPage() {
     setIsUploadPdfModalOpen(false);
   };
 
-  // Função para abrir os detalhes
   const handleAbrirDetalhes = (cooperado: typeof cooperadosMocados[0]) => {
     setCooperadoSelecionado(cooperado);
   };
@@ -39,19 +37,34 @@ export function CooperadoIndexPage() {
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6 relative">
       
-      <header className="flex flex-col md:flex-row justify-between items-center gap-4">
+      {/* --- CABEÇALHO DA PÁGINA --- */}
+      <div className="flex flex-col gap-6">
+        
+        {/* Linha 1: Título Isolado */}
         <h1 className="text-2xl font-bold text-slate-800">LISTA DE COOPERADOS</h1>
-        <div className="flex w-full md:w-auto gap-4">
+        
+        {/* Linha 2: Barra de Busca (Esquerda) e Botão (Direita) */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 w-full">
           <div className="relative w-full md:w-96">
-            <input type="text" placeholder="Buscar por nome" className="w-full pl-4 pr-10 py-2.5 rounded-full border border-gray-300 focus:outline-none focus:border-[#00A859] focus:ring-1 focus:ring-[#00A859] bg-white shadow-sm transition-all" />
+            <input 
+              type="text" 
+              placeholder="Buscar por nome" 
+              className="w-full pl-4 pr-10 py-2.5 rounded-full border border-gray-300 focus:outline-none focus:border-[#00A859] focus:ring-1 focus:ring-[#00A859] bg-white shadow-sm transition-all" 
+            />
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
           </div>
-          <button onClick={() => setIsModalInitialOpen(true)} className="bg-[#00A859] hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-full flex items-center gap-2 shadow-md transition-colors shrink-0">
+          
+          <button 
+            onClick={() => setIsModalInitialOpen(true)} 
+            className="bg-[#00A859] hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-full flex items-center gap-2 shadow-md transition-colors shrink-0 w-full md:w-auto justify-center"
+          >
             Cadastrar Cooperado <Plus size={20} />
           </button>
         </div>
-      </header>
 
+      </div>
+
+      {/* --- TABELA DE DADOS --- */}
       <main className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
@@ -67,7 +80,6 @@ export function CooperadoIndexPage() {
                 <td className="p-4 text-gray-600 font-medium">{cooperado.nome}</td>
                 <td className="p-4 text-gray-500">{cooperado.produtos}</td>
                 <td className="p-4 text-center">
-                  {/* BOTÃO QUE ABRE O MODAL DE DETALHES */}
                   <button 
                     onClick={() => handleAbrirDetalhes(cooperado)}
                     className="text-gray-400 hover:text-[#00A859] hover:bg-emerald-50 p-2 rounded-full transition-all"
@@ -82,7 +94,7 @@ export function CooperadoIndexPage() {
       </main>
 
       {/* ========================================================= */}
-      {/* NOVO MODAL: DETALHES DO COOPERADO                         */}
+      {/* MODAL: DETALHES DO COOPERADO                              */}
       {/* ========================================================= */}
       {cooperadoSelecionado && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
@@ -92,7 +104,6 @@ export function CooperadoIndexPage() {
               <X size={28} strokeWidth={2.5} />
             </button>
 
-            {/* Cabeçalho do Perfil */}
             <div className="flex items-center gap-6 border-b border-gray-100 pb-6 pr-8">
               <div className="w-24 h-24 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center shrink-0">
                 <UserCircle size={80} strokeWidth={1} />
@@ -104,7 +115,6 @@ export function CooperadoIndexPage() {
               </div>
             </div>
 
-            {/* Arquivos PDF */}
             <div className="flex flex-col gap-3">
               <button className="flex items-center justify-between w-full bg-gray-50 hover:bg-gray-100 border border-gray-200 p-4 rounded-xl transition-colors group">
                 <div className="flex items-center gap-3">
@@ -127,7 +137,6 @@ export function CooperadoIndexPage() {
               </button>
             </div>
 
-            {/* Botões de Ação */}
             <div className="flex flex-col gap-3 mt-2">
               <button className="w-full bg-[#0066B3] hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-md transition-transform active:scale-95 text-lg">
                 Editar dados do cooperado
@@ -145,7 +154,6 @@ export function CooperadoIndexPage() {
         </div>
       )}
 
-      {/* (MANTIDOS OS OUTROS MODAIS AQUI EMBAIXO PARA NÃO POLUIR O CÓDIGO DO EXEMPLO) */}
       {/* MODAL 1: ESCOLHA DE TIPO DE CADASTRO */}
       {isModalInitialOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
