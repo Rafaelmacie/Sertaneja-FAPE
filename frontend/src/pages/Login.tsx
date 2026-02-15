@@ -11,8 +11,8 @@ import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 
 // --- ASSETS ---
-import Logo from '../assets/logo-verde-sem-fundo.svg';
-import fundoImg from '../assets/logo-fundo-fape.jpg';
+import Logo from '../assets/logo/logo-verde-escuro-sem-fundo.svg';
+import fundoImg from '../assets/fundo-login.jpg';
 
 /**
  * Componente da Página de Login.

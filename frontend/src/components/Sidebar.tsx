@@ -11,7 +11,7 @@ import {
   ChevronRight,
   UserCircle
 } from 'lucide-react';
-import logoImg from '../assets/logo-verde-sem-fundo.svg'; 
+import logoImg from '../assets/logo/logo-verde-sem-fundo.svg';
 
 /**
  * Componente de Menu Lateral (Sidebar).
