@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import { administrativoRoutes } from './modules/usuarios/diretores/administrativo/administrativoRoutes';
-import { globalErrorHandler } from './shared/middlewares/globalErrorHandler'
+import { globalErrorHandler } from './shared/middlewares/globalErrorHandler';
+import { produtoRoutes } from './modules/produto/produtoRoutes';
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.get('/', (req, res) => {
 
 // Diretor Administrativo
 app.use('/usuarios/diretores/administrativo', administrativoRoutes);
+app.use('/api/produtos', produtoRoutes);
 
 app.use(globalErrorHandler);
 
