@@ -10,6 +10,7 @@ import { DefaultLayout } from './layouts/DefaultLayout';
 // imports de cooperad
 import { CooperadoIndexPage } from './pages/diretores/administrativo/controleCooperados/tabelaCooperados';
 import { CadastroCooperadoIndexPage } from './pages/diretores/administrativo/controleCooperados/cadastroCooperado';
+import { TermoDesligamentoPage } from './pages/diretores/administrativo/controleCooperados/TermoDesligamentoPage';
 
 // imports das paginas 
 import { Dashboard } from './pages/diretores/administrativo/Dashboard';
@@ -43,6 +44,7 @@ function App() {
             {/* Rotas de Cooperados */}
             <Route path="/cooperados" element={<CooperadoIndexPage />} />
             <Route path="/cooperados/novo" element={<CadastroCooperadoIndexPage />} />
+            <Route path="/cooperados/desligamento/:id" element={<TermoDesligamentoPage />} /> 
             
             {/* Outras páginas */}
             <Route path="/clientes" element={<Clientes/>} />
