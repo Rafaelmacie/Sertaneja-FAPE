@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Users, 
@@ -13,9 +13,14 @@ import {
 } from 'lucide-react';
 import logoImg from '../assets/logo-verde-sem-fundo.svg'; 
 
+/**
+ * Componente de Menu Lateral (Sidebar).
+ * Gerencia a navegação principal do sistema e a função de logout.
+ */
 export function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const menuItems = [
     { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
@@ -26,6 +31,16 @@ export function Sidebar() {
     { label: 'Ajuda/Suporte', icon: HelpCircle, path: '/ajuda' },
   ];
 
+  /**
+   * Encerra a sessão do usuário, limpando os dados salvos e redirecionando para o login.
+   * Ao fazer isso, a nossa `PrivateRoute` vai barrar a volta pro sistema.
+   */
+  const handleLogout = () => {
+    localStorage.removeItem('@Fape:token');
+    localStorage.removeItem('@Fape:user');
+    navigate('/');
+  };
+
   return (
     <aside 
       className={`h-screen bg-white border-r border-gray-200 flex flex-col transition-all duration-300 relative z-20 ${
@@ -33,15 +48,12 @@ export function Sidebar() {
       }`}
     >
       {/* Botão de Recolher */}
-            {/* Botão de Recolher (Ajustado: Sem fundo, Maior, Verde e Centralizado) */}
-        <button 
+      <button 
         onClick={() => setIsCollapsed(!isCollapsed)}
-        // top-1/2 centraliza na altura | -right-4 joga um pouco pra fora | text-[#00A859] é o tom forte
         className="absolute -right-12 top-1/2 -translate-y-1/2 z-50 text-[#00A859] hover:text-emerald-700 transition-colors p-2"
-        >
-        {/* Aumentei o size de 16 para 28 (Mais visível) */}
+      >
         {isCollapsed ? <ChevronRight size={28} /> : <ChevronLeft size={28} />}
-        </button>
+      </button>
 
       {/* --- LOGO --- */}
       <div className={`p-6 flex justify-center items-center ${isCollapsed ? 'px-2' : ''}`}>
@@ -80,15 +92,13 @@ export function Sidebar() {
                 
                 ${isActive 
                   ? isCollapsed 
-                    ? 'bg-[#00A859] text-white shadow-md' // --- ESTILO FECHADO: Fundo Verde + Texto Branco
-                    : 'bg-white shadow-lg shadow-gray-300/50 text-[#00A859] font-bold translate-x-2 z-10' // --- ESTILO ABERTO: Fundo Branco + Texto Verde + Saltado
+                    ? 'bg-[#00A859] text-white shadow-md' // ESTILO FECHADO
+                    : 'bg-white shadow-lg shadow-gray-300/50 text-[#00A859] font-bold translate-x-2 z-10' // ESTILO ABERTO
                   : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' // INATIVO
                 }
               `}
             >
-              {/* --- BARRINHA VERDE LATERAL --- 
-                  (Só aparece se estiver ATIVO e ABERTO) 
-              */}
+              {/* BARRINHA VERDE LATERAL */}
               {isActive && !isCollapsed && (
                 <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#00A859] rounded-l-xl"></div>
               )}
@@ -98,7 +108,7 @@ export function Sidebar() {
                 className={`
                   shrink-0 z-10 relative transition-colors
                   ${isActive 
-                    ? isCollapsed ? 'text-white' : 'text-[#00A859]' // Ícone Branco se fechado, Verde se aberto
+                    ? isCollapsed ? 'text-white' : 'text-[#00A859]' 
                     : 'text-gray-400 group-hover:text-gray-900'
                   }
                 `} 
@@ -112,7 +122,10 @@ export function Sidebar() {
 
       {/* --- BOTÃO SAIR --- */}
       <div className="p-4 border-t border-gray-100 mt-auto">
-        <button className={`flex items-center gap-3 w-full text-red-500 hover:bg-red-50 px-4 py-3 rounded-lg transition-colors ${isCollapsed ? 'justify-center' : ''}`}>
+        <button 
+          onClick={handleLogout}
+          className={`flex items-center gap-3 w-full text-red-500 hover:bg-red-50 px-4 py-3 rounded-lg transition-colors ${isCollapsed ? 'justify-center' : ''}`}
+        >
           <LogOut size={22} />
           {!isCollapsed && <span className="font-medium">Sair</span>}
         </button>

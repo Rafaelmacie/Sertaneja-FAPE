@@ -1,7 +1,8 @@
 import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Lock } from 'lucide-react';
+// Adicionamos Eye e EyeOff aqui:
+import { User, Eye, EyeOff } from 'lucide-react'; 
 import axios from 'axios';
 
 // --- SERVIÇOS E COMPONENTES ---
@@ -25,10 +26,13 @@ export function Login() {
   const [email, setEmail] = useState<string>('');
   const [senha, setSenha] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  
+  // Estado para controlar a visualização da senha
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   /**
    * Lida com a submissão do formulário de login.
-   * Comunica-se com a API e trata erros comuns (como credenciais inválidas ou erro no servidor).
+   * Comunica-se com a API e trata erros comuns.
    */
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -54,6 +58,14 @@ export function Login() {
       setIsLoading(false);
     }
   }
+
+  /**
+   * Exibe alerta temporário para funcionalidades não implementadas.
+   */
+  const handleEmDesenvolvimento = (e: React.MouseEvent) => {
+    e.preventDefault();
+    alert('Funcionalidade em desenvolvimento 🚧');
+  };
 
   return (
     <div className="min-h-screen w-full flex bg-white">
@@ -96,7 +108,6 @@ export function Login() {
           className="relative z-10 w-full max-w-md bg-white/75 backdrop-blur-xl shadow-2xl rounded-3xl p-10 border border-green-100"
         >
           
-          {/* Animação do Logo */}
           <motion.div
             animate={{ y: [0, -12, 0] }}
             transition={{ repeat: Infinity, duration: 3 }}
@@ -118,14 +129,24 @@ export function Login() {
               required
             />
             
-            <Input 
-              type="password" 
-              placeholder="Senha" 
-              icon={Lock} 
-              value={senha}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setSenha(e.target.value)}
-              required
-            />
+            {/* CAIXA DE SENHA COM OLHINHO */}
+            <div className="relative w-full">
+              <Input 
+                type={showPassword ? "text" : "password"} 
+                placeholder="Senha"  
+                value={senha}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setSenha(e.target.value)}
+                required
+              />
+              <button 
+                type="button" 
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-green-700 transition-colors z-10"
+                title={showPassword ? "Ocultar senha" : "Mostrar senha"}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
 
             <div className="flex justify-between items-center text-sm w-full">
               <label className="flex items-center gap-2 cursor-pointer text-green-700">
@@ -136,9 +157,14 @@ export function Login() {
                 <span className="select-none">Lembrar senha</span>
               </label>
 
-              <a href="#" className="underline text-green-600 hover:text-green-800 transition-colors duration-200">
+              {/* MUDANÇA: Alerta de em desenvolvimento */}
+              <button
+                type="button"
+                onClick={handleEmDesenvolvimento}
+                className="underline text-green-600 hover:text-green-800 transition-colors duration-200"
+              >
                 Esqueci senha
-              </a>
+              </button>
             </div>
 
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="mt-3">
@@ -154,9 +180,14 @@ export function Login() {
 
           <p className="text-gray-600 text-sm mt-6 text-center">
             Ainda não tem acesso?{' '}
-            <a href="/cadastro" className="font-bold text-green-700 hover:text-green-900 transition-colors">
+            {/* MUDANÇA: Alerta de em desenvolvimento */}
+            <button
+              type="button"
+              onClick={handleEmDesenvolvimento}
+              className="font-bold text-green-700 hover:text-green-900 transition-colors"
+            >
               Cadastre-se
-            </a>
+            </button>
           </p>
 
         </motion.div>

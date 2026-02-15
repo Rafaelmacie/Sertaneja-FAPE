@@ -1,4 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+// Nossos "Guarda-costas" de rotas
+import { PublicRoute } from './routes/PublicRoute';
+import { PrivateRoute } from './routes/PrivateRoute';
+
 import { Login } from './pages/Login';
 import { DefaultLayout } from './layouts/DefaultLayout';
 
@@ -17,21 +22,35 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Rota Pública */}
-        <Route path="/" element={<Login />} />
+        
+        {/* ============================================================== */}
+        {/* ROTA PÚBLICA (Só acessa o Login se NÃO estiver autenticado)    */}
+        {/* ============================================================== */}
+        <Route element={<PublicRoute />}>
+          <Route path="/" element={<Login />} />
+        </Route>
 
-        {/* Rotas Privadas (Com a Sidebar) */}
-        <Route element={<DefaultLayout />}>
-          {/* Quando acessar /cooperados, carrega o componente da pasta nova */}
-          <Route path="/cooperados" element={<CooperadoIndexPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/clientes" element={<Clientes/>} />
-          <Route path="/produtos" element={<Produtos/>} />
-          <Route path="/demandas" element={<Demandas/>} />
-          <Route path="/ajuda" element={<AjudaSuporte/>} />
 
-          {/* rotas de cadastro de cooperados */}
-          <Route path="/cooperados/novo" element={<CadastroCooperadoIndexPage />} />
+        {/* ============================================================== */}
+        {/* ROTAS PRIVADAS (Só acessa o Sistema se ESTIVER autenticado)    */}
+        {/* ============================================================== */}
+        <Route element={<PrivateRoute />}>
+          
+          {/* O DefaultLayout engloba a Sidebar para todas essas telas */}
+          <Route element={<DefaultLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            
+            {/* Rotas de Cooperados */}
+            <Route path="/cooperados" element={<CooperadoIndexPage />} />
+            <Route path="/cooperados/novo" element={<CadastroCooperadoIndexPage />} />
+            
+            {/* Outras páginas */}
+            <Route path="/clientes" element={<Clientes/>} />
+            <Route path="/produtos" element={<Produtos/>} />
+            <Route path="/demandas" element={<Demandas/>} />
+            <Route path="/ajuda" element={<AjudaSuporte/>} />
+          </Route>
+
         </Route>
 
       </Routes>
