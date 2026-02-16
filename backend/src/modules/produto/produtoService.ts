@@ -1,7 +1,7 @@
 import { ProdutoRepository } from "./produtoRepository";
 import { ICreateProdutoDTO } from "./produtoModel";
 import { AppError } from "../../shared/errors/appError";
-import { toTitleCase } from "../../shared/utils/formatters";
+import { Formatters } from "../../shared/utils/formatters";
 
 export class ProdutoService {
     private repository = new ProdutoRepository();
@@ -12,8 +12,8 @@ export class ProdutoService {
         if (exists) throw new AppError("Já existe um produto com este código.");
 
         // Formatação
-        data.nome_prod = toTitleCase(data.nome_prod);
-        if (data.marca_prod) data.marca_prod = toTitleCase(data.marca_prod);
+        data.nome_prod = Formatters.toTitleCase(data.nome_prod);
+        if (data.marca_prod) data.marca_prod = Formatters.toTitleCase(data.marca_prod);
 
         return await this.repository.save(data);
     }
