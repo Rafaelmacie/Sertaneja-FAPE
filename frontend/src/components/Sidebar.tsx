@@ -60,7 +60,8 @@ export function Sidebar() {
         <img 
           src={logoImg} 
           alt="Logo FAPE" 
-          className={`object-contain transition-all duration-300 ${isCollapsed ? 'w-10 h-10' : 'w-40'}`} 
+          className={`object-contain transition-all duration-300 select-none ${isCollapsed ? 'w-10 h-10' : 'w-40'}`} 
+          draggable={false}
         />
       </div>
 
